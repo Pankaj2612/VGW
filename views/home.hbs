@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- <link rel="stylesheet" href="/public/CSS/home.css" type="text/css" /> -->
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <h2 class="logo">Logo</h2>
+      <nav class="navigation">
+        <a href="#">Matches</a>
+        <a href="#">Events</a>
+        <a href="#">Support </a>
+        <a href="#" class="toggle-link" id="open-profile">My Account</a>
+        <div class="navigation-coin" onclick="toggleFormForCoin()">
+          <box-icon type="solid" color="white" name="coin"></box-icon>
+          <span class="profile-location">{{user_coin}}</span>
+        </div>
+      </nav>
+    </header>
+    <div class="container">
+      <button class="bet-btn1" onclick="toggleForm()">Bet</button>
+      <button class="bet-btn2" onclick="toggleForm()">Bet</button>
+      <div class="team" id="team1">
+        <div class="blur"></div>
+        <div class="teamlogo"></div>
+      </div>
+      <div class="vs">
+        <p>vs</p>
+      </div>
+      <div class="team" id="team2">
+        <div class="blur"></div>
+        <div class="teamlogo"></div>
+      </div>
+    </div>
+    <div class="form-box">
+      <form class="form">
+        <button class="close-button">
+          <i class="fas fa-times"></i>
+        </button>
+        <input
+          type="number"
+          class="amount-field"
+          placeholder="Betting Amount"
+          required
+          max="10000"
+        />
+        <span style="border: none">Betting on Team 1 for 1000</span>
+        <input type="submit" class="submit-btn"  value="Place Bet"/>
+      </form>
+    </div>
+
+    <div class="coin-add-box">
+      <form class="form" action="/home/add-coin" method="post" >
+        <button class="close-button2">
+          <i class="fas fa-times"></i>
+        </button>
+          <input
+          type="number"
+          class="amount-field"
+          placeholder="Amount"
+          name="amount"
+          required
+          max="10000"
+        />
+        <input type="hidden" name="user_id" value="{{user_id}}">
+        <input type="submit" class="submit-btn" value="Add Coin to Wallet"/>
+      </form>
+    </div>
+
+
+    <div class="My-Account">
+      <!-- <a href="#" class="toggle-link" id="open-profile">My Account</a> -->
+      <div class="profile-window" id="profile-window">
+        <span class="close-sign" id="close-profile">&#10006;</span>
+        <div class="profile-content">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="56"
+            height="56"
+            fill="currentColor"
+            class="bi bi-person-circle"
+            viewBox="0 0 16 16"
+          >
+            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+            <path
+              fill-rule="evenodd"
+              d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
+              />
+          </svg>
+          <h1 id="full_name_user">{{full_name}}</h1>
+          <p class="profile-email">{{profile_email}}</p>
+          <!-- <p class="profile-name">John Doe</p> -->
+          <p class="profile-location">{{user_coin}}</p>
+          <!-- Add more profile information here -->
+        </div>
+      </div>
+    </div>
+    <script>
+      toggleForm = () => {
+        let form = document.querySelector(".form-box");
+        form.classList.toggle("show");
+      };
+      const closeButton = document.querySelector(".close-button");
+      closeButton.addEventListener("click", toggleForm);
+      
+      toggleFormForCoin = () => {
+        let form = document.querySelector(".coin-add-box");
+        form.classList.toggle("show");
+      };
+      const closeButton2 = document.querySelector(".close-button2");
+      closeButton2.addEventListener("click", toggleFormForCoin);
+      // const closeButton = document.querySelector(".close-button");
+      // closeButton.addEventListener("click", toggleForm);
+
+    </script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+    const coin_form = document.getElementById('coin-add-box');
+    const userCoinElement = document.querySelector('.profile-location span');
+    
+    coin_form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+    const formData = new FormData(coinAddForm);
+    const user_id = formData.get('user_id');
+    const amount = formData.get('amount');
+
+    fetch('/home/add-coin', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ user_id, amount }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          window.location.href = `/home?coin=${data.tcoin}`;
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+    });
+});
+  
+    </script>
+    <script>
+      // Internal JavaScript
+      const openLink = document.getElementById("open-profile");
+      const closeBtn = document.getElementById("close-profile");
+      const profileWindow = document.getElementById("profile-window");
+
+      openLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        profileWindow.style.right = "0";
+      });
+
+      closeBtn.addEventListener("click", () => {
+        profileWindow.style.right = "-300px";
+      });
+    </script>
+
+    <style>
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+:root {
+  --red: #de1d1d;
+  --orange: #d98324;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+  /* border: 2px solid  green; */
+}
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url("colorful-backdrop-with-gradation-colors.jpg") no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+header {
+  position: fixed;
+  border: 2px solid #fff;
+  border-radius: 10px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .navigation {
+    display: flex;
+    justify-self: center;
+    align-items: center;
+    left: 0;
+  }
+}
+.navigation a {
+  position: relative;
+  font-size: 1.1em;
+  color: white;
+  text-decoration: none;
+  font-weight: 400;
+  margin-left: 40px;
+}
+.navigation a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 100%;
+  height: 3px;
+  background: #fff;
+  border-radius: 5px;
+  transform-origin: right;
+  transform: scaleX(0);
+  transition: transform 0.5s;
+}
+.navigation a:hover::after {
+  transform-origin: left;
+  transform: scaleX(1);
+}
+
+.navigation-coin {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  font-size: 1.1em;
+  color: white;
+  text-decoration: none;
+  font-weight: 400;
+  margin-left: 40px;
+}
+
+.container {
+  position: relative;
+  display: flex;
+
+  margin-top: 11vh;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.team {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 20px 20px;
+  height: 50vh;
+  width: 50vw;
+  border: 3px solid white;
+  border-radius: 15px;
+  background: transparent;
+  backdrop-filter: blur(10px);
+}
+.blur {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background: transparent;
+  backdrop-filter: blur(3px);
+  z-index: -1;
+}
+
+#team1 {
+  background-image: url("2576101.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+#team2 {
+  background-image: url("2576103.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.teamlogo {
+  display: flex;
+  position: relative;
+  height: 20vh;
+  width: 10vw;
+  border-radius: 100%;
+  background-image: url("https://upload.wikimedia.org/wikipedia/en/4/43/Esports_organization_Fnatic_logo.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.vs p {
+  font-size: 50px;
+}
+.bet-btn1 {
+  position: absolute;
+  background-color: white;
+  width: 8vw;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-radius: 40px;
+  color: var(--orange);
+  padding: 10px;
+  bottom: 2.2px;
+  left: 20vw;
+  z-index: 1;
+  border: 1px solid var(--orange);
+}
+.bet-btn1:hover {
+  background: var(--red);
+  border-radius: 16px;
+  color: #fff;
+  transition: 0.5s;
+  border: none;
+}
+.bet-btn2 {
+  position: absolute;
+  background-color: white;
+  width: 8vw;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-radius: 40px;
+  color: var(--orange);
+  padding: 10px;
+  bottom: 2.2px;
+  right: 20vw;
+  z-index: 1;
+  border: 1px solid var(--orange);
+}
+.bet-btn2:hover {
+  background: var(--red);
+  border-radius: 16px;
+  color: #fff;
+  transition: 0.5s;
+  border: none;
+}
+
+.form-box {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  display: none;
+}
+.form-box.show {
+  display: block;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.close-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 18px;
+  color: #333;
+}
+.close-button2 {
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 18px;
+  color: #333;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  position: relative;
+  top: 20%;
+  height: 25vh;
+  width: 25vw;
+  margin: 8% auto;
+  background-color: wheat;
+  border: 1px solid rgba(84, 55, 55, 0.5);
+  backdrop-filter: blur(13px);
+  border-radius: 20px;
+  padding: 5px;
+}
+.submit-btn {
+  width: 85%;
+  padding: 10px 30px;
+  cursor: pointer;
+  display: block;
+  margin: auto;
+  background: linear-gradient(to right, #a40606, #d98324);
+  border: 0;
+  outline: none;
+  border-radius: 30px;
+}
+.amount-field {
+  font-size: 20px;
+  font-weight: 700;
+  width: 100%;
+  padding: 10px 0;
+  margin: 5px 0;
+  border: none;
+  outline: none;
+  background: transparent;
+}
+
+/* Account Off CAnvas */
+
+.profile-window {
+  position: fixed;
+  top: 0;
+  right: -300px; /* Start off-canvas from the right */
+  width: 300px;
+  height: 100%;
+  background-color: #fff;
+  box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2); /* Shadow on the left side */
+  transition: right 0.3s ease-in-out;
+}
+
+.profile-content {
+  padding: 20px;
+  text-align: center;
+}
+
+.profile-image {
+  max-width: 100%;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.profile-name {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.profile-email,
+.profile-location {
+  font-size: 16px;
+  color: #777;
+}
+
+/* Style the close button */
+.close-sign {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ff6b6b; /* Funky color */
+  cursor: pointer;
+}
+
+.close-sign:hover {
+  transform: rotate(90deg); /* Add a fun rotation effect on hover */
+}
+
+.coin-add-box {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  display: none;
+}
+.coin-add-box.show {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+
+  </style> -->
+
+  </body>
+</html>
